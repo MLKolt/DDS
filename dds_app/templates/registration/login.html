@@ -1,0 +1,33 @@
+{% extends 'dds_app/base.html' %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+            <div class="row justify-content-center">
+            <div class="col-md-5">
+                <h3 class="text-center mb-4">Вход</h3>
+
+                <div class="card shadow-lg p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-danger small">{{ field.errors }}</div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn-gold">Войти</button>
+                            <a href="{% url 'register' %}" class="btn btn-outline-secondary">Зарегистироваться</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "dds_app/base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Справочники</h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+                <a href="{% url 'reference-list' model='status' %}" class="text-decoration-none">
+                    <div class="card h-100 border-gold shadow-sm hover-shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-0" style="color: #1f1f1f;">Статусы</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="{% url 'reference-list' model='type' %}" class="text-decoration-none">
+                    <div class="card h-100 border-gold shadow-sm hover-shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-0" style="color: #1f1f1f;">Типы</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="{% url 'reference-list' model='category' %}" class="text-decoration-none">
+                    <div class="card h-100 border-gold shadow-sm hover-shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-0" style="color: #1f1f1f;">Категории</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col">
+                <a href="{% url 'reference-list' model='subcategory' %}" class="text-decoration-none">
+                    <div class="card h-100 border-gold shadow-sm hover-shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-0" style="color: #1f1f1f;">Подкатегории</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

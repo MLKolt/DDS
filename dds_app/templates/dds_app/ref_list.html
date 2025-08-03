@@ -1,0 +1,48 @@
+{% extends "dds_app/base.html" %}
+
+{% load custom_tags %}
+
+{% block content %}
+    <div class="container mt-4" style="max-width: 600px;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="m-0">{{ model_verbose }}</h2>
+            <a href="{% url 'reference-create' model=model %}" class="btn btn-gold">Добавить</a>
+        </div>
+
+        {% if object_list %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            {% for field in fields %}
+                                <th>
+                                    {{ field.verbose_name }}
+                                </th>
+                            {% endfor %}
+                            <th class="actions-cell">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for obj in ref_list %}
+                            <tr>
+                                {% for field in fields %}
+                                    <td>{{ obj|get_field_display:field.name }}</td>
+                                {% endfor %}
+                                <td class="actions-cell">
+                                    <a href="{% url 'reference-update' model=model pk=obj.pk %}" class="btn btn-sm btn-outline-primary" title="Редактировать">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'reference-delete' model=model pk=obj.pk %}" class="btn btn-sm btn-outline-danger" title="Удалить">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted fst-italic text-center">Нет полей.</p>
+        {% endif %}
+    </div>
+{% endblock %}

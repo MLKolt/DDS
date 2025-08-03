@@ -1,0 +1,295 @@
+{% extends "dds_app/base.html" %}
+
+{% block title %}ДДС - Главная{% endblock %}
+
+{% block static %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{ filter_form.media }}
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="mb-4">Движение денежных средств</h2>
+
+        <form method="get" class="mb-4 shadow-sm p-3">
+            <div class="row g-3 mb-2">
+                <div class="col-md-3">
+                    <label for="id_custom_date_from" class="form-label">Дата от:</label>
+                    {{ filter_form.custom_date_from }}
+                </div>
+                <div class="col-md-3">
+                    <label for="id_custom_date_to" class="form-label">Дата до:</label>
+                    {{ filter_form.custom_date_to }}
+                </div>
+                <div class="col-md-3">
+                    <label for="id_status" class="form-label">Статус:</label>
+                    {{ filter_form.status }}
+                </div>
+                <div class="col-md-3">
+                    <label for="id_type" class="form-label">Тип:</label>
+                    {{ filter_form.type }}
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-3">
+                    <label for="id_category" class="form-label">Категория:</label>
+                    {{ filter_form.category }}
+                </div>
+                <div class="col-md-3">
+                    <label for="id_subcategory" class="form-label">Подкатегория:</label>
+                    {{ filter_form.subcategory }}
+                </div>
+                <div class="col-md-3">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="id_amount_min" class="form-label">Сумма от:</label>
+                           {{ filter_form.amount_min }}
+                        </div>
+                        <div class="col-6">
+                            <label for="id_amount_max" class="form-label">Сумма до:</label>
+                            {{ filter_form.amount_max }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="id_comment" class="form-label">Комментарий содержит:</label>
+                    {{ filter_form.comment }}
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2 mt-2">
+                <div class="form-inline" style="margin-top: 10px;">
+                    <label for="page_size" class="form-label" style="color:#1f1f1f; font-weight: 500;">
+                        Записей на странице:
+                    </label>
+                    <input type="number" name="per_page" id="per_page"
+                           value="{{ request.GET.per_page|default_if_none:10 }}"
+                           class="form-gold"
+                           min="1" max="1000" style="max-width: 80px; display: inline-block; margin-left: 8px;">
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-gold w-100">Фильтровать</button>
+                    <a href="{% url 'reset-filters' %}" class="btn btn-reset w-100">
+                        Сбросить
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>
+                            Дата
+                            <span class="sort-icons" data-column="data">
+                                <span class="sort sort-asc" title="По возрастанию">▼</span>
+                                <span class="sort sort-desc active" title="По убыванию">▲</span>
+                            </span>
+                        </th>
+                        <th>
+                            Статус
+                            <span class="sort-icons" data-column="status">
+                                <span class="sort sort-asc" title="По возрастанию">▼</span>
+                                <span class="sort sort-desc" title="По убыванию">▲</span>
+                            </span>
+                        </th>
+                        <th>
+                            Тип
+                            <span class="sort-icons" data-column="type">
+                                <span class="sort sort-asc" title="По возрастанию">▼</span>
+                                <span class="sort sort-desc" title="По убыванию">▲</span>
+                            </span>
+                        </th>
+                        <th>
+                            Категория
+                            <span class="sort-icons" data-column="category">
+                                <span class="sort sort-asc" title="По возрастанию">▼</span>
+                                <span class="sort sort-desc" title="По убыванию">▲</span>
+                            </span>
+                        </th>
+                        <th>
+                            Подкатегория
+                            <span class="sort-icons" data-column="subcategory">
+                                <span class="sort sort-asc" title="По возрастанию">▼</span>
+                                <span class="sort sort-desc" title="По убыванию">▲</span>
+                            </span>
+                        </th>
+                        <th>
+                            Сумма
+                            <span class="sort-icons" data-column="amount">
+                                <span class="sort sort-asc" title="По возрастанию">▼</span>
+                                <span class="sort sort-desc" title="По убыванию">▲</span>
+                            </span>
+                        </th>
+                        <th>
+                            Комментарий
+                            <span class="sort-icons" data-column="comment">
+                                <span class="sort sort-asc" title="По возрастанию">▼</span>
+                                <span class="sort sort-desc" title="По убыванию">▲</span>
+                            </span>
+                        </th>
+                        <th class="actions-cell">
+                            Действия
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for entry in dds_list %}
+                    <tr>
+                        <td>{{ entry.custom_date }}</td>
+                        <td>{{ entry.status.name }}</td>
+                        <td>{{ entry.type.name }}</td>
+                        <td>{{ entry.category.name }}</td>
+                        <td>{{ entry.subcategory.name }}</td>
+                        <td>{{ entry.amount }}</td>
+                        <td>{{ entry.comment }}</td>
+                        <td class="actions-cell">
+                            <a href="{% url 'update-dds' entry.pk %}" class="btn btn-sm btn-outline-primary" title="Редактировать">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'delete-dds' entry.pk %}" class="btn btn-outline-danger btn-sm" title="Удалить">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">Записей нет</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if is_paginated %}
+        <nav aria-label="Навигация по страницам">
+            <ul class="pagination justify-content-center mt-4">
+
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link btn-outline-gold" href="?page={{ page_obj.previous_page_number }}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}">
+                        Назад
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link btn-outline-secondary">Назад</span>
+                </li>
+            {% endif %}
+
+            <li class="page-item disabled">
+                <span class="page-link bg-light border">
+                    Стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link btn-outline-gold" href="?page={{ page_obj.next_page_number }}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}">
+                        Вперёд
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link btn-outline-secondary">Вперёд</span>
+                </li>
+            {% endif %}
+        </ul>
+  </nav>
+{% endif %}
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const table = document.querySelector("table");
+            const headers = table.querySelectorAll("th .sort-icons");
+
+            headers.forEach(header => {
+                const asc = header.querySelector(".sort-asc");
+                const desc = header.querySelector(".sort-desc");
+
+                [asc, desc].forEach(icon => {
+                    icon.addEventListener("click", function () {
+                        document.querySelectorAll(".sort-icons .sort").forEach(el => el.classList.remove("active"));
+                        icon.classList.add("active");
+
+                        headers.forEach(h => {
+                            if (h !== header) {
+                                h.querySelector(".sort-asc").classList.remove("active");
+                                h.querySelector(".sort-desc").classList.remove("active");
+                            }
+                        });
+
+                        const th = header.closest("th");
+                        const columnIndex = Array.from(th.parentElement.children).indexOf(th);
+                        const rows = Array.from(table.querySelectorAll("tbody tr"))
+                            .filter(row => row.querySelectorAll("td").length > 1);
+
+                        const direction = icon.classList.contains("sort-asc") ? "asc" : "desc";
+                        rows.sort((a, b) => compareCells(a, b, columnIndex, direction));
+
+                        const tbody = table.querySelector("tbody");
+                        tbody.innerHTML = "";
+                        rows.forEach(row => tbody.appendChild(row));
+                    });
+                });
+            });
+
+            function compareCells(a, b, index, direction) {
+                const aText = a.children[index].textContent.trim();
+                const bText = b.children[index].textContent.trim();
+
+                const aDate = parseDate(aText);
+                const bDate = parseDate(bText);
+
+                if (aDate && bDate && !isNaN(aDate) && !isNaN(bDate)) {
+                    return direction === "asc" ? aDate - bDate : bDate - aDate;
+                }
+
+                const aNum = parseFloat(aText.replace(",", "."));
+                const bNum = parseFloat(bText.replace(",", "."));
+                const isNumber = !isNaN(aNum) && !isNaN(bNum);
+
+                if (isNumber) {
+                    return direction === "asc" ? aNum - bNum : bNum - aNum;
+                }
+
+                return direction === "asc"
+                    ? aText.localeCompare(bText)
+                    : bText.localeCompare(aText);
+            }
+
+            function parseDate(str) {
+                str = str.replace(/\s*г\.?$/, "").trim(); // убираем "г." или "г"
+                const months = {
+                    "января": 0, "февраля": 1, "марта": 2, "апреля": 3,
+                    "мая": 4, "июня": 5, "июля": 6, "августа": 7,
+                    "сентября": 8, "октября": 9, "ноября": 10, "декабря": 11
+                };
+
+                const match = str.match(/^(\d{1,2}) (\p{L}+) (\d{4})$/u);
+                if (!match) return null;
+
+                const day = parseInt(match[1], 10);
+                const monthName = match[2].toLowerCase();
+                const year = parseInt(match[3], 10);
+                const month = months[monthName];
+
+                if (month === undefined) {
+                    console.warn(`Неизвестный месяц: ${monthName}`);
+                    return null;
+                }
+
+                return new Date(year, month, day);
+            }
+        });
+    </script>
+{% endblock %}

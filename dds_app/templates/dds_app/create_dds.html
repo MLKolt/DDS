@@ -1,0 +1,20 @@
+{% extends 'dds_app/base.html' %}
+
+{% block title %}Новая ДДС-запись{% endblock %}
+
+{% block static %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {{ form.media }}
+{% endblock %}
+
+{% block content %}
+    <h2 class="text-center mb-4">Новая запись</h2>
+    <form method="post" class="container mb-4 col-md-4 shadow p-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-gold w-100">Создать</button>
+            <a href="{% url 'dds-list' %}" class="btn btn-reset w-100">Назад</a>
+        </div>
+    </form>
+{% endblock %}
